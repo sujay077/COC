@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoC ZapQuake Calculator</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121824">
     <style>
         :root {
             --bg-color: #121824;
@@ -487,6 +489,14 @@
             </div>
         `;
     }
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("Service Worker Registered"))
+    .catch(err => console.log("Service Worker Error", err));
+}
 </script>
 
 </body>
