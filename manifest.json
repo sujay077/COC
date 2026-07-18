@@ -1,10 +1,12 @@
 {
   "name": "CoC ZapQuake Calculator",
   "short_name": "ZapQuake",
+  "description": "Clash of Clans ZapQuake Calculator",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#121824",
   "theme_color": "#121824",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
