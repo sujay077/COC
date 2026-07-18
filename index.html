@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoC ZapQuake Calculator</title>
+    <style>
+        :root {
+            --bg-color: #121824;
+            --card-bg: #1e293b;
+            --accent-color: #3b82f6;
+            --success-color: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 0.95rem;
+            color: var(--accent-color);
+            margin: 15px 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .slider-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .slider-header {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .damage-highlight {
+            color: #fbbf24;
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fixed-min-badge {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        input[type="range"] {
+            flex-grow: 1;
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+            accent-color: var(--accent-color);
+        }
+
+        .level-badge {
+            font-size: 0.95rem;
+            background-color: var(--bg-color);
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            min-width: 55px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .calc-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .calc-btn:active {
+            background-color: #2563eb;
+        }
+
+        .results-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            display: none;
+        }
+
+        .results-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .best-combo {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid var(--success-color);
+            padding: 10px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 12px;
+        }
+
+        .combo-title {
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .alt-section {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .alt-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .alt-item {
+            font-size: 0.85rem;
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        .warning-box {
+            background-color: rgba(239, 68, 68, 0.12);
+            border-left: 4px solid #ef4444;
+            padding: 10px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .warning-title {
+            color: #f87171;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Zap-Quake Calculator ⚔️</h1>
+
+    <div class="input-group">
+        <label for="targetHp">HP <span style="color: #ef4444;">*</span></label>
+        <input type="number" id="targetHp" class="text-input" placeholder="Required" min="1" max="20000" required>
+    </div>
+
+    <h2>1. Hero Equipment</h2>
+    
+    <!-- Giant Arrow -->
+    <div class="slider-container">
+        <div class="slider-header" id="arrowHeader">🏹 Giant Arrow</div>
+        <div class="slider-row">
+            <span class="fixed-min-badge">[ Lvl 0 ]</span>
+            <input type="range" id="arrowLvl" min="0" max="18" value="18">
+            <span class="level-badge" id="arrowLabel">[ 18 ]</span>
+        </div>
+    </div>
+
+    <!-- Rocket Backpack -->
+    <div class="slider-container">
+        <div class="slider-header" id="backpackHeader">🚀 Rocket Backpack</div>
+        <div class="slider-row">
+            <span class="fixed-min-badge">[ Lvl 0 ]</span>
+            <input type="range" id="backpackLvl" min="0" max="27" value="27">
+            <span class="level-badge" id="backpackLabel">[ 27 ]</span>
+        </div>
+    </div>
+
+    <h2>2. Spells</h2>
+
+    <!-- Lightning -->
+    <div class="slider-container">
+        <div class="slider-header" id="lightningHeader">⚡ Lightning Spell</div>
+        <div class="slider-row">
+            <span class="fixed-min-badge">[ Lvl 1 ]</span>
+            <input type="range" id="lightningLvl" min="1" max="13" value="13">
+            <span class="level-badge" id="lightningLabel">[ 13 ]</span>
+        </div>
+    </div>
+
+    <!-- Earthquake -->
+    <div class="slider-container">
+        <div class="slider-header" id="eqHeader">🌋 Earthquake Spell</div>
+        <div class="slider-row">
+            <span class="fixed-min-badge">[ Lvl 1 ]</span>
+            <input type="range" id="eqLvl" min="1" max="8" value="5">
+            <span class="level-badge" id="eqLabel">[ 5 ]</span>
+        </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculateSpells()">🔍 Calculate Spells</button>
+
+    <div class="results-box" id="resultsBox">
+        <div class="results-title">Analysis Results 📊</div>
+        <div id="hpSummary" style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;"></div>
+        
+        <div id="comboContainer"></div>
+        <div id="altContainer"></div>
+        <div id="wasteContainer" style="margin-top: 12px;"></div>
+    </div>
+</div>
+
+<script>
+    const DB = {
+        giantArrow: {
+            0: 0, 1: 750, 2: 750, 3: 850, 4: 850, 5: 850, 6: 1000, 7: 1000, 8: 1000,
+            9: 1100, 10: 1100, 11: 1100, 12: 1200, 13: 1200, 14: 1200,
+            15: 1350, 16: 1350, 17: 1350, 18: 1500
+        },
+        rocketBackpack: {
+            0: 0, 1: 575, 2: 575, 3: 750, 4: 750, 5: 750, 6: 950, 7: 950, 8: 950,
+            9: 1125, 10: 1125, 11: 1125, 12: 1325, 13: 1325, 14: 1325,
+            15: 1500, 16: 1500, 17: 1500, 18: 1700, 19: 1700, 20: 1700,
+            21: 1875, 22: 1875, 23: 1875, 24: 2050, 25: 2050, 26: 2050, 27: 2150
+        },
+        lightningSpell: {
+            1: 150, 2: 180, 3: 210, 4: 240, 5: 270, 6: 320, 7: 400, 8: 480,
+            9: 560, 10: 600, 11: 640, 12: 680, 13: 720
+        },
+        earthquakeSpell: {
+            1: 14.5, 2: 17, 3: 21, 4: 25, 5: 29, 6: 29, 7: 29, 8: 29
+        }
+    };
+
+    const elements = {
+        targetHp: document.getElementById('targetHp'),
+        arrowLvl: document.getElementById('arrowLvl'),
+        backpackLvl: document.getElementById('backpackLvl'),
+        lightningLvl: document.getElementById('lightningLvl'),
+        eqLvl: document.getElementById('eqLvl'),
+        arrowHeader: document.getElementById('arrowHeader'),
+        backpackHeader: document.getElementById('backpackHeader'),
+        lightningHeader: document.getElementById('lightningHeader'),
+        eqHeader: document.getElementById('eqHeader'),
+        arrowLabel: document.getElementById('arrowLabel'),
+        backpackLabel: document.getElementById('backpackLabel'),
+        lightningLabel: document.getElementById('lightningLabel'),
+        eqLabel: document.getElementById('eqLabel'),
+        resultsBox: document.getElementById('resultsBox'),
+        hpSummary: document.getElementById('hpSummary'),
+        comboContainer: document.getElementById('comboContainer'),
+        altContainer: document.getElementById('altContainer'),
+        wasteContainer: document.getElementById('wasteContainer')
+    };
+
+    function updateUiLayout() {
+        const arrowVal = DB.giantArrow[elements.arrowLvl.value];
+        const backpackVal = DB.rocketBackpack[elements.backpackLvl.value];
+        const lightningVal = DB.lightningSpell[elements.lightningLvl.value];
+        const eqVal = DB.earthquakeSpell[elements.eqLvl.value];
+
+        elements.arrowHeader.innerHTML = `🏹 Giant Arrow <span class="damage-highlight">(Damage: ${arrowVal.toLocaleString()})</span>`;
+        elements.backpackHeader.innerHTML = `🚀 Rocket Backpack <span class="damage-highlight">(Damage: ${backpackVal.toLocaleString()})</span>`;
+        elements.lightningHeader.innerHTML = `⚡ Lightning Spell <span class="damage-highlight">(Damage: ${lightningVal})</span>`;
+        elements.eqHeader.innerHTML = `🌋 Earthquake Spell <span class="damage-highlight">(Damage: ${eqVal}%)</span>`;
+
+        elements.arrowLabel.textContent = `[ ${elements.arrowLvl.value} ]`;
+        elements.backpackLabel.textContent = `[ ${elements.backpackLvl.value} ]`;
+        elements.lightningLabel.textContent = `[ ${elements.lightningLvl.value} ]`;
+        elements.eqLabel.textContent = `[ ${elements.eqLvl.value} ]`;
+    }
+
+    [elements.arrowLvl, elements.backpackLvl, elements.lightningLvl, elements.eqLvl].forEach(slider => {
+        slider.addEventListener('input', updateUiLayout);
+    });
+
+    updateUiLayout();
+
+    function calculateSpells() {
+        const maxHp = parseFloat(elements.targetHp.value) || 0;
+        const arrowDmg = DB.giantArrow[elements.arrowLvl.value];
+        const backpackDmg = DB.rocketBackpack[elements.backpackLvl.value];
+        const lightningDmg = DB.lightningSpell[elements.lightningLvl.value];
+        const eqBasePercent = DB.earthquakeSpell[elements.eqLvl.value] / 100;
+
+        if (maxHp <= 0) {
+            elements.targetHp.style.borderColor = "#ef4444";
+            alert("HP is a mandatory field. Please enter a valid defense building HP value.");
+            return;
+        } else {
+            elements.targetHp.style.borderColor = "var(--border-color)";
+        }
+
+        const equipmentTotalDmg = arrowDmg + backpackDmg;
+        const remainingHp = Math.max(0, maxHp - equipmentTotalDmg);
+
+        elements.resultsBox.style.display = "block";
+        elements.hpSummary.innerHTML = `
+            • Building Max HP: <b>${maxHp.toLocaleString()}</b><br>
+            • Hero Damage Dealt: <b>${equipmentTotalDmg.toLocaleString()}</b><br>
+            • Remaining Building HP: <b>${remainingHp.toLocaleString()}</b>
+        `;
+
+        if (remainingHp <= 0) {
+            elements.comboContainer.innerHTML = `
+                <div class="best-combo">
+                    <div class="combo-title">🎉 No Spells Required!</div>
+                    <div>Hero Equipment fully destroys this defense.</div>
+                </div>
+            `;
+            elements.altContainer.innerHTML = "";
+            let gearWaste = equipmentTotalDmg - maxHp;
+            elements.wasteContainer.innerHTML = `
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ EXTRA WASTAGE DAMAGE REPORT:</div>
+                    <div>• Excess Wasted Damage: <b>${gearWaste.toLocaleString()} HP</b><br>
+                    <span style="font-size:0.8rem; opacity:0.8;">(Equipment overkilled the defense by ${gearWaste.toLocaleString()} HP without casting any spells!)</span></div>
+                </div>
+            `;
+            return;
+        }
+
+        let validCombos = [];
+
+        for (let eqCount = 0; eqCount <= 4; eqCount++) {
+            for (let zapCount = 0; zapCount <= 15; zapCount++) {
+                
+                let eqTotalDamage = 0;
+                for (let i = 1; i <= eqCount; i++) {
+                    if (i === 1) eqTotalDamage += maxHp * eqBasePercent;
+                    else if (i === 2) eqTotalDamage += maxHp * (eqBasePercent / 3);
+                    else if (i === 3) eqTotalDamage += maxHp * (eqBasePercent / 5);
+                    else if (i === 4) eqTotalDamage += maxHp * (eqBasePercent / 7);
+                }
+
+                eqTotalDamage = Math.floor(eqTotalDamage);
+                let zapTotalDamage = zapCount * lightningDmg;
+                let totalSpellDamage = eqTotalDamage + zapTotalDamage;
+
+                if (totalSpellDamage >= remainingHp) {
+                    let totalHousingSpace = eqCount + zapCount;
+                    let totalOverallDamage = equipmentTotalDmg + totalSpellDamage;
+                    let excessDamage = totalOverallDamage - maxHp;
+                    
+                    validCombos.push({ 
+                        eq: eqCount, 
+                        zap: zapCount, 
+                        space: totalHousingSpace, 
+                        waste: excessDamage,
+                        totalDmg: totalOverallDamage
+                    });
+                }
+            }
+        }
+
+        if (validCombos.length === 0) {
+            elements.comboContainer.innerHTML = `<div>❌ Target HP is too high for normal spell caps.</div>`;
+            elements.altContainer.innerHTML = "";
+            elements.wasteContainer.innerHTML = "";
+            return;
+        }
+
+        // Sort by housing space first, then lower waste
+        validCombos.sort((a, b) => a.space - b.space || a.waste - b.waste);
+        const best = validCombos[0];
+
+        elements.comboContainer.innerHTML = `
+            <div class="best-combo">
+                <div class="combo-title">🏆 TOP OPTIMAL COMBO (${best.space} Spell Spaces)</div>
+                <div>👉 <b>${best.eq} Earthquake</b> + <b>${best.zap} Lightning</b> Spells</div>
+            </div>
+        `;
+
+        // Generate Alternative Configurations Section
+        let alternatives = validCombos.filter(c => !(c.eq === best.eq && c.zap === best.zap));
+        
+        // Group unique space variations or next best alternatives
+        let dynamicAlts = [];
+        let trackedKeys = new Set([`${best.eq}-${best.zap}`]);
+        
+        for (let combo of alternatives) {
+            let key = `${combo.eq}-${combo.zap}`;
+            if (!trackedKeys.has(key) && dynamicAlts.length < 3) {
+                trackedKeys.add(key);
+                dynamicAlts.push(combo);
+            }
+        }
+
+        if (dynamicAlts.length > 0) {
+            let altHtml = `<div class="alt-section"><div class="alt-title">Alternative Methods:</div>`;
+            dynamicAlts.forEach(alt => {
+                altHtml += `
+                    <div class="alt-item">
+                        • <b>${alt.eq} EQ</b> + <b>${alt.zap} Zap</b> (${alt.space} Spaces) — Excess: ${alt.waste.toLocaleString()} HP
+                    </div>`;
+            });
+            altHtml += `</div>`;
+            elements.altContainer.innerHTML = altHtml;
+        } else {
+            elements.altContainer.innerHTML = "";
+        }
+
+        elements.wasteContainer.innerHTML = `
+            <div class="warning-box">
+                <div class="warning-title">⚠️ EXTRA WASTAGE DAMAGE REPORT:</div>
+                <div>• Excess Wasted Damage: <b>${best.waste.toLocaleString()} HP</b><br>
+                <span style="font-size:0.85rem; opacity:0.85;">(This combo deals ${best.totalDmg.toLocaleString()} total damage. You overkilled the building by ${best.waste.toLocaleString()} HP!)</span></div>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
